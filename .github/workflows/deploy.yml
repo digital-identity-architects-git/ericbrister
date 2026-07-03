@@ -1,0 +1,39 @@
+name: Deploy website via FTP
+
+# Publishes the contents of ./public to your web host over FTP/FTPS
+# whenever you push to the main branch (or run it manually).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ftp-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # --- Required: stored as GitHub Actions secrets ---
+          server: ${{ secrets.FTP_SERVER }}       # e.g. ftp.yourdomain.com
+          username: ${{ secrets.FTP_USERNAME }}    # your FTP login / user
+          password: ${{ secrets.FTP_PASSWORD }}    # your FTP password
+
+          # --- Optional overrides (use repository Variables, not secrets) ---
+          # Folder on the server to publish into. Defaults to the FTP root.
+          # Common values: "/public_html/" (cPanel) or "/htdocs/" or "/www/".
+          server-dir: ${{ vars.FTP_SERVER_DIR || './' }}
+
+          # Which local folder to upload. This repo keeps the site in ./public.
+          local-dir: ./public/
+
+          # Use "ftps" for an explicit TLS connection if your host supports it.
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}
