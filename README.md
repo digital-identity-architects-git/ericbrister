@@ -48,8 +48,15 @@ hosts you'll want `/public_html/`.
 
 ## How a deploy runs
 
-- Push to the `main` branch → the site auto-publishes.
+- Push to the repository's **default branch** → the site auto-publishes.
+  (The workflow deploys from whatever branch GitHub marks as default, so it
+  works whether that branch is named `main` or something else.)
 - Or trigger it manually: **Actions → Deploy website via FTP → Run workflow**.
+
+> **First-time setup:** a deploy only runs *after* a push lands on the default
+> branch (or you run it manually). If the site has never appeared, confirm the
+> three `FTP_*` secrets are set (see above) and that your domain points to that
+> FTP host — then merge a change or use *Run workflow* to publish.
 
 Only the contents of `public/` are uploaded, so the workflow file and README
 stay out of your live site.
