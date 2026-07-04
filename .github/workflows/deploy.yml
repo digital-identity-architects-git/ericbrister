@@ -1,11 +1,10 @@
 name: Deploy website via FTP
 
 # Publishes the contents of ./public to your web host over FTP/FTPS
-# whenever you push to the main branch (or run it manually).
+# whenever you push to the repository's default branch (or run it manually).
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -15,6 +14,12 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Only publish from the default branch. This gates by the repo's actual
+    # default branch (rename-proof) instead of hard-coding "main" — the earlier
+    # `branches: [main]` trigger never matched, so the site never deployed.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref_name == github.event.repository.default_branch
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

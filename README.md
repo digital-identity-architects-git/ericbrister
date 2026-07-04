@@ -48,8 +48,15 @@ hosts you'll want `/public_html/`.
 
 ## How a deploy runs
 
-- Push to the `main` branch → the site auto-publishes.
+- Push to the repository's **default branch** → the site auto-publishes.
+  (The workflow gates on the repo's actual default branch, so it works no
+  matter what that branch is named — this repo has no `main` branch.)
 - Or trigger it manually: **Actions → Deploy website via FTP → Run workflow**.
+
+> **Not showing up yet?** Two things must also be true before the live site
+> appears: (1) the three `FTP_*` secrets above are set, and (2) your domain's
+> DNS points at the web host you're uploading to. The workflow can succeed at
+> uploading files and the site still won't resolve until DNS is pointed.
 
 Only the contents of `public/` are uploaded, so the workflow file and README
 stay out of your live site.
